@@ -134,4 +134,38 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
                 break;
         }
     }
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+
+    }
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+    /**
+     * 方法必须重写
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
 }
