@@ -11,7 +11,7 @@
 ![Screenshot]( https://github.com/amap-demo/android-map-zoomtospan/raw/master/apk/Screenshot.png )
 
 ## 扫一扫安装##
-![Screenshot]( https://github.com/amap-demo/android-map-zoomtospan/raw/master/apk/1479866100.png )
+![Screenshot]( https://github.com/amap-demo/android-map-zoomtospan/raw/master/apk/1480320135.png )
 
 ## 使用方法##
 ###1:配置搭建AndroidSDK工程###
