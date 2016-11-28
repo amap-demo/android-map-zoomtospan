@@ -26,37 +26,24 @@
 
 ## 核心难点 ##
 ```
-mTimerTask = new circleTask(circle, 1000);
-mTimer.schedule(mTimerTask, 0, 30);
-/* 外圈动画. */
-private  class circleTask extends TimerTask {
-        private double r;
-        private Circle circle;
-        private long duration = 1000;
-
-        public circleTask(Circle circle, long rate){
-            this.circle = circle;
-            this.r = circle.getRadius();
-            if (rate > 0 ) {
-                this.duration = rate;
-            }
-        }
-        @Override
-        public void run() {
-            try {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float input = (float)elapsed / duration;
-//                外圈放大后消失
-                float t = interpolator1.getInterpolation(input);
-                double r1 = (t + 1) * r;
-                circle.setRadius(r1);
-                if (input > 2){
-                    start = SystemClock.uptimeMillis();
-                }
-            } catch (Throwable e) {
-               e.printStackTrace();
-            }
+//缩放移动地图，保证所有自定义marker在可视范围中，且地图中心点不变。
+    public void zoomToSpan() {
+        if (pointList != null && pointList.size() > 0) {
+            if (aMap == null)
+                return;
+            LatLngBounds bounds = getLatLngBounds(center, pointList);
+            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
         }
     }
-}
+    //根据中心点和自定义内容获取缩放bounds
+    private LatLngBounds getLatLngBounds(LatLng center, List<LatLng> pointList) {
+        LatLngBounds.Builder b = LatLngBounds.builder();
+        for (int i = 0; i < pointList.size(); i++) {
+            LatLng p = pointList.get(i);
+            LatLng p1 = new LatLng((center.latitude*2)-p.latitude, (center.longitude*2)-p.longitude);
+            b.include(p);
+            b.include(p1);
+        }
+        return b.build();
+    }
 ```
