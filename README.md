@@ -26,24 +26,55 @@
 
 ## 核心难点 ##
 ```
-//缩放移动地图，保证所有自定义marker在可视范围中，且地图中心点不变。
+    /**
+     * 缩放移动地图，保证所有自定义marker在可视范围中，且地图中心点不变。
+     */
+    public void zoomToSpanWithCenter() {
+        if (pointList != null && pointList.size() > 0) {
+            if (aMap == null)
+                return;
+            centerMarker.setVisible(true);
+            centerMarker.showInfoWindow();
+            LatLngBounds bounds = getLatLngBounds(centerPoint, pointList);
+            aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+        }
+    }
+
+    //根据中心点和自定义内容获取缩放bounds
+    private LatLngBounds getLatLngBounds(LatLng centerpoint, List<LatLng> pointList) {
+        LatLngBounds.Builder b = LatLngBounds.builder();
+        if (centerpoint != null){
+            for (int i = 0; i < pointList.size(); i++) {
+                LatLng p = pointList.get(i);
+                LatLng p1 = new LatLng((centerpoint.latitude * 2) - p.latitude, (centerpoint.longitude * 2) - p.longitude);
+                b.include(p);
+                b.include(p1);
+            }
+        }
+        return b.build();
+    }
+
+    /**
+     *  缩放移动地图，保证所有自定义marker在可视范围中。
+     */
     public void zoomToSpan() {
         if (pointList != null && pointList.size() > 0) {
             if (aMap == null)
                 return;
-            LatLngBounds bounds = getLatLngBounds(center, pointList);
+            centerMarker.setVisible(false);
+            LatLngBounds bounds = getLatLngBounds(pointList);
             aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
         }
     }
-    //根据中心点和自定义内容获取缩放bounds
-    private LatLngBounds getLatLngBounds(LatLng center, List<LatLng> pointList) {
+    /**
+     * 根据自定义内容获取缩放bounds
+     */
+    private LatLngBounds getLatLngBounds( List<LatLng> pointList) {
         LatLngBounds.Builder b = LatLngBounds.builder();
         for (int i = 0; i < pointList.size(); i++) {
-            LatLng p = pointList.get(i);
-            LatLng p1 = new LatLng((center.latitude*2)-p.latitude, (center.longitude*2)-p.longitude);
-            b.include(p);
-            b.include(p1);
-        }
+             LatLng p = pointList.get(i);
+             b.include(p);
+         }
         return b.build();
     }
 ```
