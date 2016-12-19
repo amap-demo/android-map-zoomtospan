@@ -1,11 +1,10 @@
 package amap.android_map_zoomtospan;
 
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -19,10 +18,10 @@ import com.amap.api.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AMap.OnMapClickListener, AMap.OnMapLoadedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements AMap.OnMapClickListener, AMap.OnMapLoadedListener, View.OnClickListener, AMap.OnMapLongClickListener {
     private AMap aMap;
     private MapView mapView;
-    private Marker centerMarker ;
+    private Marker centerMarker;
     private LatLng center = new LatLng(39.993167, 116.473274);// 中心点
     private List<LatLng> pointList = new ArrayList<LatLng>();
     private Button btn;
@@ -50,23 +49,24 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
         }
         aMap.setOnMapClickListener(this);
         aMap.setOnMapLoadedListener(this);
-        btn = (Button)findViewById(R.id.btn);
+        aMap.setOnMapLongClickListener(this);
+        btn = (Button) findViewById(R.id.btn);
         btn.setOnClickListener(this);
     }
 
     private void poiListinit() {
-        pointList.add(new LatLng(39.993755,116.467987));
-        pointList.add(new LatLng(39.985589,116.469306));
-        pointList.add(new LatLng(39.990946,116.48439));
-        pointList.add(new LatLng(40.000466,116.463384));
-        pointList.add(new LatLng(39.975426,116.490079));
-        pointList.add(new LatLng(40.016392,116.464343));
-        pointList.add(new LatLng(39.959215,116.464882));
-        pointList.add(new LatLng(39.962136,116.495418));
-        pointList.add(new LatLng(39.994012,116.426363));
-        pointList.add(new LatLng(39.960666,116.444798));
-        pointList.add(new LatLng(39.972976,116.424517));
-        pointList.add(new LatLng(39.951329,116.455913));
+        pointList.add(new LatLng(39.993755, 116.467987));
+        pointList.add(new LatLng(39.985589, 116.469306));
+        pointList.add(new LatLng(39.990946, 116.48439));
+        pointList.add(new LatLng(40.000466, 116.463384));
+        pointList.add(new LatLng(39.975426, 116.490079));
+        pointList.add(new LatLng(40.016392, 116.464343));
+        pointList.add(new LatLng(39.959215, 116.464882));
+        pointList.add(new LatLng(39.962136, 116.495418));
+        pointList.add(new LatLng(39.994012, 116.426363));
+        pointList.add(new LatLng(39.960666, 116.444798));
+        pointList.add(new LatLng(39.972976, 116.424517));
+        pointList.add(new LatLng(39.951329, 116.455913));
     }
 
     @Override
@@ -90,8 +90,9 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
         centerMarker.showInfoWindow();
         //添加点
         addToMap();
-        zoomToSpan();
+        zoomToSpan(center, pointList);
     }
+
     /**
      * 添加Marker到地图中。
      */
@@ -103,8 +104,9 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
                             .defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         }
     }
+
     //缩放移动地图，保证所有自定义marker在可视范围中，且地图中心点不变。
-    public void zoomToSpan() {
+    public void zoomToSpan(LatLng center, List<LatLng> pointList) {
         if (pointList != null && pointList.size() > 0) {
             if (aMap == null)
                 return;
@@ -112,12 +114,13 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
             aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
         }
     }
+
     //根据中心点和自定义内容获取缩放bounds
     private LatLngBounds getLatLngBounds(LatLng center, List<LatLng> pointList) {
         LatLngBounds.Builder b = LatLngBounds.builder();
         for (int i = 0; i < pointList.size(); i++) {
             LatLng p = pointList.get(i);
-            LatLng p1 = new LatLng((center.latitude*2)-p.latitude, (center.longitude*2)-p.longitude);
+            LatLng p1 = new LatLng((center.latitude * 2) - p.latitude, (center.longitude * 2) - p.longitude);
             b.include(p);
             b.include(p1);
         }
@@ -128,12 +131,13 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn:
-                zoomToSpan();
+                zoomToSpan(center, pointList);
                 break;
             default:
                 break;
         }
     }
+
     /**
      * 方法必须重写
      */
@@ -143,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
         mapView.onResume();
 
     }
+
     /**
      * 方法必须重写
      */
@@ -151,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
         super.onPause();
         mapView.onPause();
     }
+
     /**
      * 方法必须重写
      */
@@ -159,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
     /**
      * 方法必须重写
      */
@@ -166,6 +173,12 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMapClickLi
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        center = latLng;
+        centerMarker.setPosition(center);
     }
 
 }

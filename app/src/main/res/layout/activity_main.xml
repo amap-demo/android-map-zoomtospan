@@ -20,8 +20,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="点击地图添加点" />
+            android:textColor="#000000"
+            android:text="点击地图添加点\n长按地图改变中心点" />
     </LinearLayout>
     <Button
         android:id="@+id/btn"
@@ -29,6 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/map"
-        android:text="zoomToSpan" />
+        android:text="以中心点缩放" />
 
 </RelativeLayout>
